@@ -18,7 +18,7 @@ class CrmLead(models.Model):
     )
     is_same_currency = fields.Boolean(
         string='Same currency',
-        #compute='_compute_is_same_currency',
+        compute='_compute_is_same_currency',
         default = False,
     )
 
@@ -43,6 +43,12 @@ class CrmLead(models.Model):
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):
         self.planned_revenue = self.get_revenue_in_company_currency()
+    
+    @api.multi
+    @api.depends('customer_currency_id', 'company_id.currency_id')
+    def _compute_is_same_currency(self):
+        for lead in self:
+            lead.is_same_currency = False
     """
 
     @api.onchange('customer_currency_id', 'amount_customer_currency')

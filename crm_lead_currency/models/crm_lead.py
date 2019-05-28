@@ -59,6 +59,7 @@ class CrmLead(models.Model):
     ################
     
     #At creation, we force the planned revenue recompute
+    """
     @api.model
     def create(self,vals):
         

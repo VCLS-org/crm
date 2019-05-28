@@ -68,6 +68,8 @@ class CrmLead(models.Model):
 
     """
 
+    """
+
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):
         self.planned_revenue = self.get_revenue_in_company_currency()

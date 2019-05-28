@@ -7,11 +7,17 @@
     <field name="model">crm.lead</field>
     <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
     <field name="arch" type="xml">
+
       <field name="partner_id" position="before">
         <field name="customer_currency_id"/>
+        <field name="planned_revenue" widget="monetary" options="{'currency_field': 'company_currency'}"/>
         <field name="is_same_currency" invisible="1"/>
-        <field name="amount_customer_currency" attrs="{'invisible': [('is_same_currency', '=', True)]}" />
       </field>
+
+      <field name="planned_revenue" position="replace">
+        <field name="amount_customer_currency" class="oe_inline" widget="monetary" options="{'currency_field': 'customer_currency_id'}"/>
+      </field>
+
       <field name="planned_revenue" position="attributes">
         <attribute name="attrs">{'readonly': [('is_same_currency', '=', False)]}</attribute>
         <attribute name="force_save">1</attribute>

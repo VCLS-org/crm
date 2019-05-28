@@ -34,7 +34,7 @@ class CrmLead(models.Model):
             #return self.planned_revenue
         return self.customer_currency_id._convert(
             self.amount_customer_currency or 0,
-            self.company_currency,
+            self.env.ref('base.EUR'),
             self.env.user.company_id,
             fields.Datetime.now(),
         )
@@ -42,6 +42,7 @@ class CrmLead(models.Model):
     @api.onchange('partner_id')
     def _onchange_partner(self):
         self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id
+        self._onchange_currency
     
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):
@@ -52,6 +53,18 @@ class CrmLead(models.Model):
     def _compute_is_same_currency(self):
         for lead in self:
             lead.is_same_currency = False
+
+    ################
+    # CRUD Methods #
+    ################
+    
+    #At creation, we force the planned revenue recompute
+    @api.model
+    def create(self,vals):
+        
+        lead=super().create(vals)
+        lead._onchange_currency()
+
     """
 
     @api.onchange('customer_currency_id', 'amount_customer_currency')

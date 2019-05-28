@@ -10,7 +10,7 @@ class CrmLead(models.Model):
     customer_currency_id = fields.Many2one(
         string='Customer currency',
         comodel_name='res.currency',
-        default=lambda self: self.env.user.company_id.currency_id,
+        default=lambda self: self.env.ref('base.EUR'),
     )
     amount_customer_currency = fields.Monetary(
         string='Customer amount',
@@ -38,6 +38,10 @@ class CrmLead(models.Model):
             self.env.user.company_id,
             fields.Datetime.now(),
         )
+
+    @api.onchange('partner_id')
+    def _onchange_partner(self):
+        self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id
     
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):

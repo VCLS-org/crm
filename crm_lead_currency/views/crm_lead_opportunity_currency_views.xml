@@ -33,7 +33,7 @@
     <field name="arch" type="xml">
 
       <field name="planned_revenue" position="replace">
-        <field name="amount_customer_currency" widget="monetary" options="{'currency_field': 'customer_currency_id'}"/>
+        <field name="amount_customer_currency" string="Expected Revenue" widget="monetary" options="{'currency_field': 'customer_currency_id'}"/>
         <field name="customer_currency_id"/>
         <field name="company_currency" invisible="1"/>
       </field>

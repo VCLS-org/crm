@@ -19,7 +19,31 @@ class CrmLead(models.Model):
     is_same_currency = fields.Boolean(
         string='Same currency',
         compute='_compute_is_same_currency',
+        default = False,
     )
+
+    @api.multi
+    def get_revenue_in_company_currency(self):
+        """
+        Compute the planned revenue in the company currency.
+        
+        If the customer currency is different than the company currency,
+        the planned revenue is computed in the company currency.
+        """
+        self.ensure_one()
+        #if self.is_same_currency:
+            #return self.planned_revenue
+        return self.customer_currency_id._convert(
+            self.amount_customer_currency or 0,
+            self.company_currency,
+            self.env.user.company_id,
+            fields.Datetime.now(),
+        )
+    
+    @api.onchange('customer_currency_id', 'amount_customer_currency')
+    def _onchange_currency(self):
+        self.planned_revenue = self.get_revenue_in_company_currency()
+    """
 
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):
@@ -27,11 +51,11 @@ class CrmLead(models.Model):
 
     @api.multi
     def get_revenue_in_company_currency(self):
-        """Compute the planned revenue in the company currency.
-
-        If the customer currency is different than the company currency,
-        the planned revenue is computed in the company currency.
-        """
+        #Compute the planned revenue in the company currency.
+        #
+        #If the customer currency is different than the company currency,
+        #the planned revenue is computed in the company currency.
+        
         self.ensure_one()
         if self.is_same_currency:
             return self.planned_revenue
@@ -52,3 +76,4 @@ class CrmLead(models.Model):
                     self.env.user.company_id.currency_id
                 )
             )
+    """

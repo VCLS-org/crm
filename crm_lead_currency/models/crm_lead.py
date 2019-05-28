@@ -18,7 +18,7 @@ class CrmLead(models.Model):
     )
     is_same_currency = fields.Boolean(
         string='Same currency',
-        compute='_compute_is_same_currency',
+        #compute='_compute_is_same_currency',
         default = False,
     )
 

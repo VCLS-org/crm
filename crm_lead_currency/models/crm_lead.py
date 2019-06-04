@@ -39,7 +39,7 @@ class CrmLead(models.Model):
     def _compute_default_currency(self):
         for rec in self:
             #raise UserError("{}".format(self.env.ref('base.EUR').name))
-            rec.default_currency_id = self.env.ref('base.EUR')
+            rec.default_currency_id = self.env.ref('base.EUR').id
 
     @api.onchange('amount_customer_currency','customer_currency_id')
     def get_revenue_in_company_currency(self):

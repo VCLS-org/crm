@@ -10,10 +10,18 @@ class CrmLead(models.Model):
     def _default_currency(self):
         return self.env.ref('base.EUR')
 
-    customer_currency_id = fields.Many2one(
-        string='Customer currency',
+    default_currency_id = fields.Many2one(
+        string='Default Currency',
         comodel_name='res.currency',
-        default='_default_currency()',
+        compute='_default_currency', 
+        readonly = True,
+        store = True,
+    )
+    
+    customer_currency_id = fields.Many2one(
+        string='Customer Currency',
+        comodel_name='res.currency',
+        default='_default_currency',
     )
 
     amount_customer_currency = fields.Monetary(
@@ -22,8 +30,7 @@ class CrmLead(models.Model):
     )
 
     planned_revenue = fields.Monetary(
-        currency_field='_default_currency()',
-        #compute="get_revenue_in_company_currency",
+        currency_field='default_currency_id',
     )
 
     """is_same_currency = fields.Boolean(
@@ -53,14 +60,14 @@ class CrmLead(models.Model):
         for rec in self:
             rec.planned_revenue = rec.customer_currency_id._convert(
                 rec.amount_customer_currency or 0,
-                self.env.ref('base.EUR'),
+                rec.default_currency_id,
                 self.env.user.company_id,
                 fields.Datetime.now(),
             )
 
     @api.onchange('partner_id')
     def _onchange_partner(self):
-        self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id or self.env.ref('base.EUR')
+        self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id or self.default_currency_id
         self.get_revenue_in_company_currency()
 
     """

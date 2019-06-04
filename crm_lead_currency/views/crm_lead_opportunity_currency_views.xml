@@ -10,8 +10,8 @@
 
       <field name="partner_id" position="before">
         <field name="customer_currency_id"/>
-        <field name="planned_revenue" string="Converted Revenue" widget="monetary"/>
-        <!-- <field name="is_same_currency" invisible="1"/> -->
+        <field name="planned_revenue" string="Converted Revenue" widget="monetary" options="{'currency_field': 'default_currency_id'}"/>
+        <field name="default_currency_id" invisible="1"/>
       </field>
 
       <field name="planned_revenue" position="replace">

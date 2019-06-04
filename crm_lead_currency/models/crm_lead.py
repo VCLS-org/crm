@@ -7,8 +7,6 @@ from odoo import api, fields, models
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    
-
     default_currency_id = fields.Many2one(
         string='Default Currency',
         comodel_name='res.currency',

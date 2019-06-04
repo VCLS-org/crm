@@ -10,7 +10,7 @@ class CrmLead(models.Model):
     customer_currency_id = fields.Many2one(
         string='Customer currency',
         comodel_name='res.currency',
-        default=lambda self: self.env.ref('base.EUR'),
+        default="self.env.ref('base.EUR')",
     )
 
     amount_customer_currency = fields.Monetary(
@@ -18,16 +18,17 @@ class CrmLead(models.Model):
         currency_field='customer_currency_id',
     )
 
-    is_same_currency = fields.Boolean(
+    """is_same_currency = fields.Boolean(
         string='Same currency',
         compute='_compute_is_same_currency',
-    )
+    )"""
 
     planned_revenue = fields.Monetary(
         currency_field="self.env.ref('base.EUR')",
+        compute="get_revenue_in_company_currency",
     )
 
-    @api.multi
+    @api.depends('amount_customer_currency')
     def get_revenue_in_company_currency(self):
         """
         Compute the planned revenue in the company currency.
@@ -54,11 +55,11 @@ class CrmLead(models.Model):
     def _onchange_currency(self):
         self.planned_revenue = self.get_revenue_in_company_currency()
     
-    @api.multi
+    """@api.multi
     @api.depends('customer_currency_id', 'company_id.currency_id')
     def _compute_is_same_currency(self):
         for lead in self:
-            lead.is_same_currency = False
+            lead.is_same_currency = False"""
 
     ################
     # CRUD Methods #

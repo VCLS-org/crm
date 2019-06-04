@@ -12,13 +12,19 @@ class CrmLead(models.Model):
         comodel_name='res.currency',
         default=lambda self: self.env.ref('base.EUR'),
     )
+
     amount_customer_currency = fields.Monetary(
         string='Customer amount',
         currency_field='customer_currency_id',
     )
+
     is_same_currency = fields.Boolean(
         string='Same currency',
         compute='_compute_is_same_currency',
+    )
+
+    planned_revenue = fields.Monetary(
+        currency_field="self.env.ref('base.EUR')",
     )
 
     @api.multi
@@ -41,8 +47,8 @@ class CrmLead(models.Model):
 
     @api.onchange('partner_id')
     def _onchange_partner(self):
-        self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id
-        self._onchange_currency
+        self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id or self.env.ref('base.EUR')
+        self._onchange_currency()
     
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):

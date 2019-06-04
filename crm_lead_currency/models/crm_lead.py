@@ -19,7 +19,6 @@ class CrmLead(models.Model):
     customer_currency_id = fields.Many2one(
         string='Customer Currency',
         comodel_name='res.currency',
-        #default='default_currency_id',
     )
 
     amount_customer_currency = fields.Monetary(
@@ -35,11 +34,12 @@ class CrmLead(models.Model):
         string='Same currency',
         compute='_compute_is_same_currency',
     )"""
-
+    
     def _compute_default_currency(self):
-        for rec in self:
+        self.default_currency_id = self.env.ref('base.EUR')
+        """for rec in self:
             #raise UserError("{}".format(self.env.ref('base.EUR').name))
-            rec.default_currency_id = self.env.ref('base.EUR').id
+            rec.default_currency_id = self.env.ref('base.EUR')"""
 
     @api.onchange('amount_customer_currency','customer_currency_id')
     def get_revenue_in_company_currency(self):

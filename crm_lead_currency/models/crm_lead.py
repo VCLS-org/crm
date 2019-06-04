@@ -7,13 +7,12 @@ from odoo import api, fields, models
 class CrmLead(models.Model):
     _inherit = 'crm.lead'
 
-    def _default_currency(self):
-        return self.env.ref('base.EUR')
+    
 
     default_currency_id = fields.Many2one(
         string='Default Currency',
         comodel_name='res.currency',
-        compute='_default_currency', 
+        compute='_compute_default_currency', 
         readonly = True,
         store = True,
     )
@@ -21,7 +20,7 @@ class CrmLead(models.Model):
     customer_currency_id = fields.Many2one(
         string='Customer Currency',
         comodel_name='res.currency',
-        default='_default_currency',
+        default='default_currency_id',
     )
 
     amount_customer_currency = fields.Monetary(
@@ -38,6 +37,9 @@ class CrmLead(models.Model):
         compute='_compute_is_same_currency',
     )"""
 
+    def _compute_default_currency(self):
+        for rec in self:
+            rec.default_currency_id = self.env.ref('base.EUR')
 
     @api.onchange('amount_customer_currency','customer_currency_id')
     def get_revenue_in_company_currency(self):

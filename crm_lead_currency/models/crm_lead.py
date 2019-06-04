@@ -2,6 +2,7 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html)
 
 from odoo import api, fields, models
+from odoo.exceptions import UserError, ValidationError
 
 
 class CrmLead(models.Model):
@@ -37,6 +38,7 @@ class CrmLead(models.Model):
 
     def _compute_default_currency(self):
         for rec in self:
+            raise UserError("{}".format(self.env.ref('base.EUR').name))
             rec.default_currency_id = self.env.ref('base.EUR')
 
     @api.onchange('amount_customer_currency','customer_currency_id')

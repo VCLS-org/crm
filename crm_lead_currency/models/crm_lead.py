@@ -34,12 +34,13 @@ class CrmLead(models.Model):
         string='Same currency',
         compute='_compute_is_same_currency',
     )"""
-    
+
+    @api.depends('amount_customer_currency')
     def _compute_default_currency(self):
-        self.default_currency_id = self.env.ref('base.EUR')
-        """for rec in self:
+        for rec in self:
             #raise UserError("{}".format(self.env.ref('base.EUR').name))
-            rec.default_currency_id = self.env.ref('base.EUR')"""
+            rec.default_currency_id = self.env.ref('base.EUR')
+            print "GO ROGER"
 
     @api.onchange('amount_customer_currency','customer_currency_id')
     def get_revenue_in_company_currency(self):

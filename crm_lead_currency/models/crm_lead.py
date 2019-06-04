@@ -20,7 +20,7 @@ class CrmLead(models.Model):
     customer_currency_id = fields.Many2one(
         string='Customer Currency',
         comodel_name='res.currency',
-        default='default_currency_id',
+        #default='default_currency_id',
     )
 
     amount_customer_currency = fields.Monetary(

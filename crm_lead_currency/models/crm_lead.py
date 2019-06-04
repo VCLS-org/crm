@@ -18,24 +18,25 @@ class CrmLead(models.Model):
         currency_field='customer_currency_id',
     )
 
+    planned_revenue = fields.Monetary(
+        currency_field="self.env.ref('base.EUR')",
+        #compute="get_revenue_in_company_currency",
+    )
+
     """is_same_currency = fields.Boolean(
         string='Same currency',
         compute='_compute_is_same_currency',
     )"""
 
-    planned_revenue = fields.Monetary(
-        currency_field="self.env.ref('base.EUR')",
-        compute="get_revenue_in_company_currency",
-    )
 
-    @api.depends('amount_customer_currency')
+    @api.onchange('amount_customer_currency','customer_currency_id')
     def get_revenue_in_company_currency(self):
         """
         Compute the planned revenue in the company currency.
         
         If the customer currency is different than the company currency,
         the planned revenue is computed in the company currency.
-        """
+        
         self.ensure_one()
         #if self.is_same_currency:
             #return self.planned_revenue
@@ -45,17 +46,26 @@ class CrmLead(models.Model):
             self.env.user.company_id,
             fields.Datetime.now(),
         )
+        """
+        for rec in self:
+            rec.planned_revenue = rec.customer_currency_id._convert(
+                rec.amount_customer_currency or 0,
+                self.env.ref('base.EUR'),
+                self.env.user.company_id,
+                fields.Datetime.now(),
+            )
 
     @api.onchange('partner_id')
     def _onchange_partner(self):
         self.customer_currency_id = self.partner_id.property_product_pricelist.currency_id or self.env.ref('base.EUR')
-        self._onchange_currency()
-    
+        self.get_revenue_in_company_currency()
+        
+    """
     @api.onchange('customer_currency_id', 'amount_customer_currency')
     def _onchange_currency(self):
         self.planned_revenue = self.get_revenue_in_company_currency()
     
-    """@api.multi
+    @api.multi
     @api.depends('customer_currency_id', 'company_id.currency_id')
     def _compute_is_same_currency(self):
         for lead in self:

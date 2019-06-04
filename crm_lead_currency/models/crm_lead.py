@@ -62,7 +62,7 @@ class CrmLead(models.Model):
         for rec in self:
             rec.planned_revenue = rec.customer_currency_id._convert(
                 rec.amount_customer_currency or 0,
-                rec.default_currency_id,
+                rec.default_currency_id or self.env.ref('base.EUR'),
                 self.env.user.company_id,
                 fields.Datetime.now(),
             )

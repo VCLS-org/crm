@@ -67,7 +67,7 @@ class CrmLead(models.Model):
     
     @api.multi
     def write(self, vals):
-        lead = self.super().write(vals)
+        lead = super(CrmLead,self).write(vals)
 
         # IF planned revenue not converted
         amount = vals.get('amount_customer_currency') or self.amount_customer_currency

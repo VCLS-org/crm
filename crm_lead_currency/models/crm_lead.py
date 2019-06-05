@@ -70,7 +70,9 @@ class CrmLead(models.Model):
         lead = super().write(vals)
         # IF planned revenue not converted
         if 'amount_customer_currency' in vals:
+            print("GO STAN GO")
             if vals['amount_customer_currency'] > 0 and vals['planned_revenue'] == 0:
+                print("GO ROGER GO")
                 lead.planned_revenue = lead.get_revenue_in_company_currency()
 
         return lead

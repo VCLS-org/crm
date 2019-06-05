@@ -68,11 +68,13 @@ class CrmLead(models.Model):
     @api.multi
     def write(self, vals):
         lead = super().write(vals)
+
         # IF planned revenue not converted
-        if 'amount_customer_currency' in vals:
-            print("GO STAN GO")
-            if vals['amount_customer_currency'] > 0 and vals['planned_revenue'] == 0:
-                print("GO ROGER GO")
-                lead.planned_revenue = lead.get_revenue_in_company_currency()
+        amount = vals.get('amount_customer_currency') or self.amount_customer_currency
+        planned = vals.get('planned_revenue') or self.planned_revenue
+
+        if amount > 0 and planned == 0:
+            print("GO ROGER GO")
+            lead.planned_revenue = lead.get_revenue_in_company_currency()
 
         return lead

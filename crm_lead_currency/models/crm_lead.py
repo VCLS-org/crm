@@ -72,6 +72,7 @@ class CrmLead(models.Model):
         # IF planned revenue not converted
         amount = vals.get('amount_customer_currency') or self.amount_customer_currency
         planned = vals.get('planned_revenue') or self.planned_revenue
+        print("amount {} planned {}".format(amount,planned))
 
         if amount > 0 and planned == 0:
             print("GO ROGER GO")

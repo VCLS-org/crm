@@ -61,13 +61,12 @@ class CrmLead(models.Model):
         self.planned_revenue = self.get_revenue_in_company_currency()
 
 
-    ###############
+   """ ###############
     # ORM Methods #
     ###############
     
     @api.multi
     def write(self, vals):
-        lead = super(CrmLead,self).write(vals)
 
         # IF planned revenue not converted
         amount = vals.get('amount_customer_currency') or self.amount_customer_currency
@@ -78,4 +77,4 @@ class CrmLead(models.Model):
             print("GO ROGER GO")
             lead.planned_revenue = lead.get_revenue_in_company_currency()
 
-        return lead
+        return super(CrmLead,self).write(vals)"""

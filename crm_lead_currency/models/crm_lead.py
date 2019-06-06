@@ -61,10 +61,11 @@ class CrmLead(models.Model):
         self.planned_revenue = self.get_revenue_in_company_currency()
 
 
-   """ ###############
+    """ 
+    ###############
     # ORM Methods #
     ###############
-    
+
     @api.multi
     def write(self, vals):
 
@@ -77,4 +78,5 @@ class CrmLead(models.Model):
             print("GO ROGER GO")
             lead.planned_revenue = lead.get_revenue_in_company_currency()
 
-        return super(CrmLead,self).write(vals)"""
+        return super(CrmLead,self).write(vals)
+    """
